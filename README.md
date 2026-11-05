@@ -173,3 +173,22 @@ chest_xray_report_reader_starter/
 ├── .gitignore
 └── README.md
 
+
+## Backend API
+
+The project includes a FastAPI backend with the following endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | API home |
+| GET | `/health` | Backend health check |
+| POST | `/predict` | Upload a chest X-ray and receive candidate predictions |
+| POST | `/gradcam` | Generate a Grad-CAM heatmap for a selected label |
+| GET | `/report/{image_id}` | Retrieve the associated verified radiology report |
+
+### Run the Backend
+
+Activate the project virtual environment, then run:
+
+```bash
+python -m uvicorn backend.app.main:app --reload

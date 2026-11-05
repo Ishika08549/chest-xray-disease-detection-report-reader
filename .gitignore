@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Secrets / local configuration
+.env
+.env.*
+!.env.example
+
+# Dataset and medical files (do not commit)
+data/raw/
+data/processed/
+data/external/
+*.dcm
+*.dicom
+*.tgz
+*.tar.gz
+*.zip
+
+# Model checkpoints / generated outputs
+*.pt
+*.pth
+*.ckpt
+outputs/
+runs/
+artifacts/
+
+# Frontend dependencies/build
+node_modules/
+dist/
+build/
+.DS_Store
+
+# Local dataset manifests
+data/manifests/

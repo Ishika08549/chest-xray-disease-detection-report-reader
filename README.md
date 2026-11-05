@@ -152,43 +152,16 @@ Grad-CAM visualizations show image regions influencing a selected model output. 
 
 ```text
 chest_xray_report_reader_starter/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   └── tests/
 ├── scripts/
-│   ├── parse_reports.py
-│   ├── build_manifest.py
-│   ├── train_resnet18.py
-│   ├── train_resnet18_v2.py
-│   ├── train_resnet50.py
-│   ├── evaluate_models.py
-│   ├── evaluate_final_test.py
-│   ├── evaluate_resnet50.py
-│   ├── evaluate_resnet50_final_test.py
-│   ├── tune_thresholds.py
-│   └── tune_resnet50_thresholds.py
 ├── docs/
-│   └── model_evaluation.md
-├── data/
-│   └── Local dataset files (excluded from Git)
-├── outputs/
-│   └── Generated results and model checkpoints (excluded from Git)
+├── data/ (local dataset; excluded from Git)
+├── outputs/ (local models; excluded from Git)
 ├── .gitignore
 └── README.md
-
-
-## Backend API
-
-The project includes a FastAPI backend with the following endpoints:
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/` | API home |
-| GET | `/health` | Backend health check |
-| POST | `/predict` | Upload a chest X-ray and receive candidate predictions |
-| POST | `/gradcam` | Generate a Grad-CAM heatmap for a selected label |
-| GET | `/report/{image_id}` | Retrieve the associated verified radiology report |
-
-### Run the Backend
-
-Activate the project virtual environment, then run:
-
-```bash
-python -m uvicorn backend.app.main:app --reload

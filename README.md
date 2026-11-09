@@ -165,3 +165,32 @@ chest_xray_report_reader_starter/
 ├── outputs/ (local models; excluded from Git)
 ├── .gitignore
 └── README.md
+```
+
+## Backend API
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | API home |
+| GET | `/health` | Health check |
+| POST | `/predict` | X-ray prediction |
+| POST | `/gradcam` | Grad-CAM heatmap |
+| GET | `/report/{image_id}` | Verified report retrieval |
+
+### Run Backend
+
+```bash
+python -m uvicorn backend.app.main:app --reload
+```
+
+API documentation: `http://127.0.0.1:8000/docs`
+
+### Run Tests
+
+```bash
+python -m pytest backend/tests/test_api.py -v
+```
+
+### Disclaimer
+
+This is an educational research prototype. Predictions and Grad-CAM visualizations are not medical diagnoses. Retrieved reports are original dataset records, not new clinical interpretations.

@@ -127,14 +127,29 @@ For detailed metrics, thresholds, confusion matrices and limitations, see [Model
 
 Grad-CAM visualizations show image regions influencing a selected model output. They do not establish disease location or provide a medical diagnosis.
 
-## Planned Application Development
+## Full-Stack Application Development
 
-- FastAPI backend and image upload endpoints.
+The full-stack application has been implemented and tested locally.
+
+### Backend
+- FastAPI backend with health and API endpoints.
+- X-ray image upload and multi-label prediction.
+- Grad-CAM visualization generation.
 - Verified radiology report lookup and extraction.
-- React frontend.
-- Frontend-backend integration.
-- End-to-end testing and error handling.
-- Final documentation and demo preparation.
+- File validation, error handling, and CORS configuration.
+
+### Frontend
+- React dashboard built with Vite.
+- X-ray image upload and prediction display.
+- Grad-CAM visualization display.
+- Radiology report reader.
+- Backend API connection status and medical disclaimer.
+
+### Testing and Validation
+- Backend API tests: 6 passed.
+- Frontend lint: 0 warnings and 0 errors.
+- Frontend production build: successful.
+- Local end-to-end testing of prediction, Grad-CAM, and report retrieval completed.
 
 ## Technology Stack
 
@@ -144,8 +159,9 @@ Grad-CAM visualizations show image regions influencing a selected model output. 
 - **Data Processing:** pandas, NumPy, Pillow
 - **Report Parsing:** Python XML parser
 - **Evaluation:** scikit-learn, Matplotlib
-- **Backend (planned):** FastAPI
-- **Frontend (planned):** React
+- **Backend:** FastAPI, Uvicorn
+- **Frontend:** React, Vite, JavaScript, CSS
+- **API Communication:** HTTP, REST endpoints
 - **Version Control:** Git and GitHub
 
 ## Repository Structure
@@ -159,6 +175,11 @@ chest_xray_report_reader_starter/
 │   │   ├── services/
 │   │   └── main.py
 │   └── tests/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── README.md
 ├── scripts/
 ├── docs/
 ├── data/ (local dataset; excluded from Git)

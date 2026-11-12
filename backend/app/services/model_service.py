@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from io import BytesIO
 
 import numpy as np
@@ -13,7 +14,12 @@ from torchvision import models, transforms
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-MODEL_PATH = PROJECT_ROOT / "outputs/models/best_resnet50.pth"
+MODEL_PATH = Path(
+    os.getenv(
+        "MODEL_PATH",
+        str(PROJECT_ROOT / "outputs/models/best_resnet50.pth")
+    )
+)
 
 LABELS = [
     "Normal",

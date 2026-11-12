@@ -215,3 +215,60 @@ python -m pytest backend/tests/test_api.py -v
 ### Disclaimer
 
 This is an educational research prototype. Predictions and Grad-CAM visualizations are not medical diagnoses. Retrieved reports are original dataset records, not new clinical interpretations.
+
+## Run the Full-Stack Application with Docker
+
+The project supports local containerized execution using Docker Compose.
+
+### Prerequisites
+
+- Docker Desktop
+- Docker Compose
+
+### Required Local Assets
+
+Before building the backend image, make sure these local files exist:
+
+- `outputs/models/best_resnet50.pth`
+- `data/processed/image_report_dataset.csv`
+
+These files are intentionally excluded from Git because they are local model and dataset assets.
+
+### Build and Start
+
+From the repository root:
+
+```bash
+docker compose up -d --build
+```
+
+### Access the Application
+
+- Frontend: http://localhost:8080
+- Backend API: http://localhost:8000
+- Backend health: http://localhost:8000/health
+- Interactive API documentation: http://localhost:8000/docs
+
+### Check Container Status
+
+```bash
+docker compose ps
+```
+
+### View Logs
+
+```bash
+docker compose logs --tail 100
+```
+
+### Stop the Application
+
+```bash
+docker compose down
+```
+
+The frontend is served by Nginx and communicates with the FastAPI backend through the configured API URL.
+
+### Local Demo Disclaimer
+
+This Docker configuration is intended for local educational demonstration. It is not a production medical service. Do not expose the application or its dataset publicly without reviewing data licensing, privacy, security, and deployment requirements.

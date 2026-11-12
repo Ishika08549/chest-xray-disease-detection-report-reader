@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 import pandas as pd
 
@@ -7,8 +8,11 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
-REPORT_DATASET_PATH = (
-    PROJECT_ROOT / "data/processed/image_report_dataset.csv"
+REPORT_DATASET_PATH = Path(
+    os.getenv(
+        "REPORT_DATASET_PATH",
+        str(PROJECT_ROOT / "data/processed/image_report_dataset.csv")
+    )
 )
 
 

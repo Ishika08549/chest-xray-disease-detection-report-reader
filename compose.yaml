@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: chest-xray-api:local
+    container_name: chest-xray-backend
+    ports:
+      - "8000:8000"
+    environment:
+      MODEL_PATH: /app/outputs/models/best_resnet50.pth
+      REPORT_DATASET_PATH: /app/data/processed/image_report_dataset.csv
+      FRONTEND_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8000
+    image: chest-xray-frontend:local
+    container_name: chest-xray-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

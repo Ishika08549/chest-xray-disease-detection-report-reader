@@ -216,6 +216,80 @@ python -m pytest backend/tests/test_api.py -v
 
 This is an educational research prototype. Predictions and Grad-CAM visualizations are not medical diagnoses. Retrieved reports are original dataset records, not new clinical interpretations.
 
+## Local Development Setup
+
+### Prerequisites
+
+- Python 3.13
+- Node.js 22 and npm
+- Git
+
+### Required Local Assets
+
+The following files must be available locally for model inference and report retrieval:
+
+- `outputs/models/best_resnet50.pth`
+- `data/processed/image_report_dataset.csv`
+
+These model and dataset assets are not included in the Git repository. They must be obtained or generated separately before running the application.
+
+### Install Backend Dependencies
+
+From the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-dev.txt
+```
+
+### Install Frontend Dependencies
+
+Open a separate terminal:
+
+```bash
+cd frontend
+npm ci
+```
+
+### Run the Application
+
+Start the backend from the repository root:
+
+```bash
+source .venv/bin/activate
+python -m uvicorn backend.app.main:app --reload
+```
+
+Start the frontend in another terminal:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open the local frontend URL displayed by Vite, usually `http://localhost:5173`.
+
+Backend API documentation: `http://127.0.0.1:8000/docs`
+
+### Run Tests
+
+From the repository root:
+
+```bash
+python -m pytest backend/tests/ -v
+```
+
+### Frontend Quality Checks
+
+From the `frontend` directory:
+
+```bash
+npm run lint
+npm run build
+```
+
 ## Run the Full-Stack Application with Docker
 
 The project supports local containerized execution using Docker Compose.
@@ -272,3 +346,17 @@ The frontend is served by Nginx and communicates with the FastAPI backend throug
 ### Local Demo Disclaimer
 
 This Docker configuration is intended for local educational demonstration. It is not a production medical service. Do not expose the application or its dataset publicly without reviewing data licensing, privacy, security, and deployment requirements.
+
+## Application Screenshots
+
+### Dashboard
+![Dashboard](docs/screenshots/01-dashboard.png)
+
+### X-Ray Prediction
+![X-Ray Prediction](docs/screenshots/02-prediction.png)
+
+### Grad-CAM Visualization
+![Grad-CAM](docs/screenshots/03-gradcam.png)
+
+### Radiology Report Reader
+![Radiology Report Reader](docs/screenshots/04-report-reader.png)

@@ -10,6 +10,9 @@ services:
     environment:
       MODEL_PATH: /app/outputs/models/best_resnet50.pth
       REPORT_DATASET_PATH: /app/data/processed/image_report_dataset.csv
+      LM_STUDIO_BASE_URL: http://host.docker.internal:1234/v1
+      LLM_MODEL: qwen3.5-4b-mlx
+      EMBEDDING_MODEL: text-embedding-nomic-embed-text-v1.5
       FRONTEND_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
     restart: unless-stopped
     healthcheck:

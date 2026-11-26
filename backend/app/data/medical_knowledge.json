@@ -1,0 +1,58 @@
+[
+  {
+    "id": "cardiomegaly",
+    "topic": "Cardiomegaly",
+    "content": "Cardiomegaly means that the heart silhouette appears enlarged on imaging. A chest X-ray appearance does not by itself prove heart failure or explain the cause. Projection, such as AP versus PA positioning, can affect the apparent heart size. A clinician interprets this finding with the full image, symptoms, history and other tests. Hindi: X-ray mein dil ki parchai badi dikhna; iska matlab apne aap heart failure hona nahi hai.",
+    "source": "RadiologyInfo – Chest X-ray video and explanation",
+    "url": "https://www.radiologyinfo.org/en/gallery/video/752"
+  },
+  {
+    "id": "pulmonary_opacity",
+    "topic": "Pulmonary opacity",
+    "content": "Pulmonary opacity is a descriptive imaging term for an area of the lung that appears denser or whiter than expected on a chest X-ray. It is not a diagnosis by itself and does not establish pneumonia, cancer or another specific cause. The appearance may have different explanations and needs interpretation with the complete image and clinical context. Hindi: X-ray mein fefde ka koi hissa zyada safed ya ghana dikhna; sirf opacity se kisi ek disease ki pushti nahi hoti.",
+    "source": "RadiologyInfo – Chest X-ray video and explanation",
+    "url": "https://www.radiologyinfo.org/en/gallery/video/752"
+  },
+  {
+    "id": "atelectasis",
+    "topic": "Atelectasis",
+    "content": "Atelectasis describes incomplete expansion or collapse of a part of the lung, which can appear denser on imaging. Its extent and possible cause vary. The term alone does not establish permanent lung damage or identify the cause. A radiologist or clinician interprets it using the location, extent, symptoms and medical history. Hindi: Fefde ka koi hissa poori tarah na phailna ya sikudna; isse apne aap permanent damage prove nahi hota.",
+    "source": "RadiologyInfo – Chest X-ray video and explanation",
+    "url": "https://www.radiologyinfo.org/en/gallery/video/752"
+  },
+  {
+    "id": "pleural_effusion",
+    "topic": "Pleural effusion",
+    "content": "Pleural effusion means excess fluid has collected in the space between the layers surrounding the lungs. It can have several causes and the term alone does not identify the cause. A clinician considers the amount of fluid, imaging, symptoms, medical history and any additional tests. Hindi: Fefdon ke aas-paas ki pleural layers ke beech extra fluid jama hona; sirf is term se cause pata nahi chalta.",
+    "source": "MedlinePlus – Pleural effusion",
+    "url": "https://medlineplus.gov/ency/article/000086.htm"
+  },
+  {
+    "id": "indication",
+    "topic": "Radiology report: Indication",
+    "content": "Indication or clinical history describes the reason the imaging examination was requested, such as a symptom, question or relevant medical history. It is not the radiologist's final conclusion. Hindi: Test karwane ka reason ya doctor ne X-ray kyun likha.",
+    "source": "RadiologyInfo – How to Read Your Chest X-ray Report",
+    "url": "https://www.radiologyinfo.org/en/info/article-chest-xray-report"
+  },
+  {
+    "id": "comparison",
+    "topic": "Radiology report: Comparison",
+    "content": "Comparison or priors identifies earlier imaging studies used for comparison with the current examination. If it says None, no comparison study is listed in that report. It does not mean the current X-ray is normal. Hindi: Purane X-ray ya scan se tulna; None ka matlab report mein comparison study listed nahi hai.",
+    "source": "RadiologyInfo – How to Read Your Chest X-ray Report",
+    "url": "https://www.radiologyinfo.org/en/info/article-chest-xray-report"
+  },
+  {
+    "id": "findings",
+    "topic": "Radiology report: Findings",
+    "content": "Findings describes what the radiologist observed in the examined body areas. It may include normal and abnormal observations. It is the detailed observation section, not necessarily the final summary. Hindi: X-ray mein radiologist ne kya dekha, uska detail description.",
+    "source": "RadiologyInfo – How to Read Your Chest X-ray Report",
+    "url": "https://www.radiologyinfo.org/en/info/article-chest-xray-report"
+  },
+  {
+    "id": "impression",
+    "topic": "Radiology report: Impression",
+    "content": "Impression is the radiologist's summary of the most important findings and their interpretation. It may include possible explanations or follow-up recommendations. It should be read with the full report and discussed with the healthcare provider. Hindi: Report ka important summary ya radiologist ka conclusion.",
+    "source": "RadiologyInfo – How to Read Your Chest X-ray Report",
+    "url": "https://www.radiologyinfo.org/en/info/article-chest-xray-report"
+  }
+]

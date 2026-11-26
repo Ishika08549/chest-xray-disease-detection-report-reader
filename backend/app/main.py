@@ -1,5 +1,6 @@
 from io import BytesIO
 import os
+import logging
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +16,8 @@ from backend.app.services.model_service import (
 from backend.app.services.report_service import (
     get_report_by_image_id
 )
+
+from backend.app.services.rag_service import explain_report
 
 
 app = FastAPI(
@@ -165,6 +168,58 @@ async def gradcam(
             "X-GradCAM-Disclaimer": "Visualization only; not a diagnosis"
         }
     )
+
+
+@app.post("/report/{image_id}/explain")
+def explain_radiology_report(image_id: str):
+
+    try:
+        report = get_report_by_image_id(image_id)
+        result = explain_report(report)
+
+        return {
+            **result,
+            "disclaimer": (
+                "AI-generated educational explanation only. "
+                "Not a diagnosis, treatment recommendation, or prescription. "
+                "The original report remains the source document."
+            )
+        }
+
+    except LookupError:
+        raise HTTPException(
+            status_code=404,
+            detail="No report found for this image ID."
+        )
+
+    except PermissionError:
+        raise HTTPException(
+            status_code=403,
+            detail="Report mapping is not verified."
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=409,
+            detail=str(error)
+        )
+
+    except RuntimeError:
+        logging.exception("Report explanation failed with RuntimeError")
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "The explanation service is temporarily unavailable. "
+                "Check that LM Studio is running with the required models loaded."
+            )
+        )
+
+    except Exception:
+        logging.exception("Unexpected report explanation error")
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to generate the report explanation."
+        )
 
 
 @app.get("/report/{image_id}")

@@ -18,6 +18,9 @@ function App() {
   const [report, setReport] = useState(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState('')
+  const [explanation, setExplanation] = useState(null)
+  const [explanationLoading, setExplanationLoading] = useState(false)
+  const [explanationError, setExplanationError] = useState('')
   const [apiStatus, setApiStatus] = useState('Checking')
 
   useEffect(() => {
@@ -129,6 +132,8 @@ function App() {
     setReportLoading(true)
     setReportError('')
     setReport(null)
+    setExplanation(null)
+    setExplanationError('')
 
     try {
       const response = await fetch(
@@ -145,6 +150,32 @@ function App() {
       setReportError(err.message || 'Unable to retrieve report.')
     } finally {
       setReportLoading(false)
+    }
+  }
+
+  async function handleExplainReport() {
+    if (!report?.image_id) return
+
+    setExplanationLoading(true)
+    setExplanationError('')
+    setExplanation(null)
+
+    try {
+      const response = await fetch(
+        `${API}/report/${encodeURIComponent(report.image_id)}/explain`,
+        { method: 'POST' }
+      )
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Unable to explain this report.')
+      }
+
+      setExplanation(data)
+    } catch (err) {
+      setExplanationError(err.message || 'Explanation service unavailable.')
+    } finally {
+      setExplanationLoading(false)
     }
   }
 
@@ -388,6 +419,73 @@ function App() {
                   <h3>Impression</h3>
                   <p>{report.impression || 'Not available'}</p>
                 </div>
+
+                <div className="report-block">
+                  <h3>AI patient-friendly explanation</h3>
+                  <p>
+                    This optional explanation uses retrieved educational references.
+                    It does not replace the original report or a doctor's interpretation.
+                  </p>
+                  <button
+                    className="primary-button"
+                    type="button"
+                    onClick={handleExplainReport}
+                    disabled={explanationLoading}
+                  >
+                    {explanationLoading ? 'Generating explanation...' : 'Explain this report'}
+                  </button>
+                </div>
+
+                {explanationError && (
+                  <div className="error-message" role="alert">{explanationError}</div>
+                )}
+
+                {explanation?.patient_friendly_explanation && (
+                  <div className="report-block">
+                    <h3>Patient-friendly summary</h3>
+                    <p>{explanation.patient_friendly_explanation.summary}</p>
+
+                    <h3>Section-wise explanation</h3>
+                    {explanation.patient_friendly_explanation.sections_explained.map((item) => (
+                      <div className="report-block" key={item.section}>
+                        <h4>{item.section}</h4>
+                        <p><strong>Original:</strong> {item.original_text || 'Not available'}</p>
+                        <p><strong>Explanation:</strong> {item.simple_explanation}</p>
+                      </div>
+                    ))}
+
+                    <h3>Medical terms</h3>
+                    {explanation.patient_friendly_explanation.medical_terms.map((item) => (
+                      <p key={item.term}>
+                        <strong>{item.term}:</strong> {item.meaning}
+                      </p>
+                    ))}
+
+                    <h3>Patient guidance</h3>
+                    <p>{explanation.patient_friendly_explanation.patient_guidance}</p>
+
+                    <h3>Limitations</h3>
+                    <ul>
+                      {explanation.patient_friendly_explanation.limitations.map((item, index) => (
+                        <li key={`${index}-${item}`}>{item}</li>
+                      ))}
+                    </ul>
+
+                    <h3>Retrieved educational sources</h3>
+                    {explanation.retrieved_sources?.map((item, index) => (
+                      <p key={`${item.topic}-${index}`}>
+                        <strong>{item.topic}:</strong>{' '}
+                        <a href={item.url} target="_blank" rel="noreferrer">
+                          {item.source}
+                        </a>
+                      </p>
+                    ))}
+
+                    <p className="helper-text">
+                      {explanation.disclaimer}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

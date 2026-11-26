@@ -43,6 +43,60 @@ def test_valid_report_endpoint():
     assert data["impression"] is not None
 
 
+
+def test_report_explanation_endpoint(monkeypatch):
+    expected = {
+        "image_id": "CXR1_1_IM-0001-3001",
+        "original_report": {
+            "findings": "Original findings",
+            "impression": "Original impression"
+        },
+        "patient_friendly_explanation": {
+            "summary": "Educational summary",
+            "sections_explained": [],
+            "medical_terms": [],
+            "patient_guidance": "Discuss the original report with a qualified doctor.",
+            "prescription": None,
+            "limitations": ["Educational information, not a diagnosis."]
+        },
+        "retrieved_sources": [
+            {
+                "topic": "example",
+                "source": "Example source",
+                "url": "https://example.org",
+                "similarity": 0.8
+            }
+        ]
+    }
+
+    def fake_explain_report(report):
+        assert report["image_id"] == "CXR1_1_IM-0001-3001"
+        return expected
+
+    monkeypatch.setattr(main_module, "explain_report", fake_explain_report)
+
+    response = client.post("/report/CXR1_1_IM-0001-3001/explain")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["image_id"] == expected["image_id"]
+    assert data["patient_friendly_explanation"]["prescription"] is None
+    assert len(data["retrieved_sources"]) == 1
+    assert "not a diagnosis" in data["disclaimer"].lower()
+
+
+def test_report_explanation_handles_lm_studio_unavailable(monkeypatch):
+    def fake_explain_report(report):
+        raise RuntimeError("LM Studio unavailable")
+
+    monkeypatch.setattr(main_module, "explain_report", fake_explain_report)
+
+    response = client.post("/report/CXR1_1_IM-0001-3001/explain")
+
+    assert response.status_code == 503
+    assert "temporarily unavailable" in response.json()["detail"].lower()
+
+
 def test_invalid_report_endpoint():
     response = client.get("/report/INVALID_IMAGE_123")
     assert response.status_code == 404

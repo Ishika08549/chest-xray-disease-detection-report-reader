@@ -1,45 +1,93 @@
-# Chest X-Ray Disease Detection & Radiology Report Reader
+# Chest X-ray Disease Detection & Radiology Report Reader
 
-An educational deep-learning project combining chest X-ray multi-label classification, Grad-CAM visualization, radiology report extraction, and a full-stack web application.
+An educational deep-learning and full-stack application that combines multi-label chest X-ray classification, Grad-CAM visualization, radiology report retrieval, and Retrieval-Augmented Generation (RAG) with a local Large Language Model (LLM).
 
-## Project Overview
+**GitHub Repository:** https://github.com/Ishika08549/chest-xray-disease-detection-report-reader
 
-The project aims to develop an educational application that:
+> **Disclaimer:** This project is an educational research prototype, not a clinically validated medical device. Its predictions and AI-generated explanations must not be used for diagnosis, treatment, or medical decision-making.
 
-1. Accepts a chest X-ray image.
-2. Predicts candidate chest X-ray labels with confidence scores.
-3. Highlights potentially relevant image regions using Grad-CAM.
-4. Extracts Findings and Impression sections from radiology reports.
-5. Displays a report only when its image-report mapping is verified.
+## 1. Project Overview
 
-**Disclaimer:** This is an educational research prototype, not a clinically validated medical device. Predictions must not be used for diagnosis or treatment.
+The project provides an integrated workflow for exploring chest X-ray images and their associated radiology reports.
 
-## Dataset
+The application supports:
 
-**Dataset:** Indiana University Chest X-ray Collection  
-**Source:** [Open-i – National Library of Medicine](https://openi.nlm.nih.gov/faq)
+1. Uploading a chest X-ray image.
+2. Predicting four candidate labels using a trained ResNet50 model.
+3. Displaying prediction confidence scores.
+4. Generating Grad-CAM visualizations to highlight image regions influencing model outputs.
+5. Retrieving the original radiology report through a verified image-report mapping.
+6. Explaining the retrieved report using a RAG pipeline and a locally hosted LLM.
 
-Dataset preparation:
+The project combines computer vision, deep learning, explainability, information retrieval, natural language processing, and full-stack development.
+
+## 2. System Workflow
+
+```text
+Chest X-ray Image
+       |
+       v
+Image Preprocessing
+       |
+       v
+ResNet50 Model
+       |
+       v
+Multi-label Predictions
+       |
+       v
+Confidence Scores + Grad-CAM
+
+Image ID
+   |
+   v
+Verified Report Retrieval
+   |
+   v
+Original Radiology Report
+   |
+   v
+Report Text Processing
+   |
+   v
+Embedding-based Knowledge Retrieval
+   |
+   v
+Top-k Relevant Knowledge
+   |
+   v
+Qwen 3.5 LLM
+   |
+   v
+Structured Educational Explanation
+```
+
+The image-classification and report-explanation pipelines are separate components connected through the application.
+
+## 3. Dataset
+
+**Dataset:** Indiana University Chest X-ray Collection
+**Source:** [National Library of Medicine Open-i](https://openi.nlm.nih.gov/faq)
+
+### Dataset preparation
 
 - 7,471 chest X-ray images downloaded.
 - 3,955 XML radiology reports parsed.
 - 7,470 image-report mappings verified.
 - Findings and Impression sections extracted.
 - Image integrity and report mapping audits performed.
-- Report-level train, validation and test splitting used to reduce data leakage.
+- Report-level train, validation, and test splitting used to reduce data leakage.
 
-The selected candidate labels are:
+### Selected candidate labels
 
 - Normal
 - Opacity
 - Cardiomegaly
 - Atelectasis
 
-These labels are derived from report metadata and are weak labels, not independently verified radiologist annotations.
+The labels are derived from radiology report metadata and are weak labels, not independently verified radiologist annotations.
 
-Raw images, XML reports, archives, processed datasets and model checkpoints are excluded from this repository.
-
-## Dataset Split
+### Dataset split
 
 | Split | Images |
 |---|---:|
@@ -48,41 +96,25 @@ Raw images, XML reports, archives, processed datasets and model checkpoints are 
 | Test | 647 |
 | **Total** | **4,304** |
 
-Images linked to the same report are kept within the same split to reduce report-level leakage.
+Images associated with the same report were kept within the same split to reduce report-level leakage.
 
-## Completed Development (30 October – 5 November 2026)
+Raw images, XML reports, archives, processed datasets, and model checkpoints are excluded from the Git repository.
 
-- Dataset download and organization.
-- XML radiology report parsing.
-- Image-report mapping and verification.
-- Image integrity and dataset audits.
-- Exploratory data analysis.
-- Candidate label selection.
-- Report-level dataset splitting.
-- ResNet18 baseline training (V1).
-- ResNet18 improved training experiment (V2).
-- ResNet50 transfer-learning experiment.
-- Validation evaluation and threshold tuning.
-- Final test evaluation of ResNet18 V2 and ResNet50.
-- Model comparison and evaluation documentation.
+## 4. Deep Learning Model Development
 
-## Model Development
+The chest X-ray classification task is formulated as a **multi-label classification problem**, because multiple candidate labels may be associated with one image.
 
-This is a multi-label classification task. More than one candidate label may be associated with an image.
+Three model experiments were conducted:
 
-Models trained:
+| Model | Description |
+|---|---|
+| ResNet18 V1 | Initial pretrained baseline |
+| ResNet18 V2 | Improved experiment with augmentation, dropout, class-weighted binary cross-entropy, AdamW, and early stopping |
+| ResNet50 | Pretrained ResNet50 transfer-learning experiment |
 
-- **ResNet18 V1:** Initial pretrained baseline.
-- **ResNet18 V2:** Improved experiment using data augmentation, dropout, class-weighted binary cross-entropy, AdamW and early stopping.
-- **ResNet50:** Pretrained ResNet50 transfer-learning experiment.
+ResNet50 achieved the highest validation macro F1 among the three experiments and was selected as the application model.
 
-ResNet50 was selected as the validation-based candidate because it achieved the highest validation macro F1 among the three experiments. ResNet18 V2 is retained as the comparison baseline.
-
-## Model Evaluation
-
-Classification thresholds were selected using validation data and then applied to the held-out test set.
-
-### Validation Macro F1
+### Validation results
 
 | Model | Validation Macro F1 |
 |---|---:|
@@ -90,9 +122,9 @@ Classification thresholds were selected using validation data and then applied t
 | ResNet18 V2 | 0.5959 |
 | ResNet50 | 0.6046 |
 
-### Held-Out Test Results
+### Held-out test results
 
-| Metric (mean across labels) | ResNet18 V2 | ResNet50 |
+| Metric | ResNet18 V2 | ResNet50 |
 |---|---:|---:|
 | Precision | 0.4892 | 0.5159 |
 | Recall | 0.8035 | 0.7347 |
@@ -100,7 +132,7 @@ Classification thresholds were selected using validation data and then applied t
 | ROC-AUC | 0.8423 | 0.8361 |
 | PR-AUC | 0.5825 | 0.5820 |
 
-### Per-Label Test F1
+### Per-label test F1
 
 | Label | ResNet18 V2 | ResNet50 |
 |---|---:|---:|
@@ -109,70 +141,187 @@ Classification thresholds were selected using validation data and then applied t
 | Cardiomegaly | 0.5714 | 0.6021 |
 | Atelectasis | 0.4931 | 0.4563 |
 
-The test results show that overall performance is close. ResNet18 V2 has a slightly higher test macro F1 and recall, while ResNet50 has higher mean precision and better Cardiomegaly F1.
+The test results show that overall performance is close. ResNet18 V2 has slightly higher test macro F1 and recall, while ResNet50 has higher mean precision and better Cardiomegaly F1.
 
-The validation-selected ResNet50 candidate is retained for the next application development phase. Test results are reported transparently and are not used to retune thresholds.
+The ResNet50 model was retained based on validation performance. Test results were reported transparently and were not used to retune classification thresholds.
 
-For detailed metrics, thresholds, confusion matrices and limitations, see [Model Evaluation and Comparison](docs/model_evaluation.md).
+Detailed results and limitations are available in [Model Evaluation](docs/model_evaluation.md).
 
-## Implemented Image Model Features
+## 5. Grad-CAM Explainability
 
-- ResNet50-based multi-label X-ray prediction pipeline.
-- Four candidate labels: Normal, Opacity, Cardiomegaly and Atelectasis.
-- Validation-selected classification thresholds.
-- Prediction testing on multiple sample X-ray images.
-- Grad-CAM visualization using the final ResNet50 convolutional block.
-- Label-specific heatmap generation and overlay saving.
-- Prediction and Grad-CAM scripts: `scripts/predict_xray.py` and `scripts/gradcam_xray.py`.
+Grad-CAM (Gradient-weighted Class Activation Mapping) is implemented to visualize image regions influencing a selected model output.
 
-Grad-CAM visualizations show image regions influencing a selected model output. They do not establish disease location or provide a medical diagnosis.
+The implementation uses the final convolutional block of ResNet50.
 
-## Full-Stack Application Development
+Features include:
 
-The full-stack application has been implemented and tested locally.
+- Label-specific heatmap generation.
+- Heatmap overlay on the original X-ray.
+- Visual inspection of model attention patterns.
+
+Grad-CAM is an approximate model explanation. It does not establish disease location, prove the presence of a condition, or provide a medical diagnosis.
+
+## 6. Radiology Report Reader
+
+The application retrieves the original radiology report using an image ID.
+
+Report retrieval includes:
+
+- Verified image-report mapping.
+- Extraction of Indication, Comparison, Findings, and Impression sections.
+- Display of original report text.
+- Handling of missing or unavailable report records.
+
+The report reader displays original dataset content. It does not independently create a clinical report.
+
+## 7. Retrieval-Augmented Generation (RAG) and LLM
+
+A RAG-based report explanation pipeline was added to help users understand medical terminology and the wording of retrieved radiology reports.
+
+### 7.1 Knowledge Base
+
+The medical knowledge corpus is maintained in:
+
+`backend/app/data/medical_knowledge.json`
+
+It contains explanatory content for topics such as:
+
+- Cardiomegaly
+- Pulmonary opacity
+- Atelectasis
+- Pleural effusion
+- Indication
+- Comparison
+- Findings
+- Impression
+
+### 7.2 Embedding Model
+
+The embedding model used is:
+
+`text-embedding-nomic-embed-text-v1.5`
+
+The model converts knowledge chunks and report-related queries into numerical vector representations.
+
+### 7.3 Retrieval Mechanism
+
+The retrieval pipeline:
+
+1. Loads the medical knowledge corpus.
+2. Generates embeddings for the knowledge chunks.
+3. Generates an embedding for the input query.
+4. Calculates cosine similarity between the query vector and knowledge vectors.
+5. Ranks the knowledge chunks by similarity.
+6. Retrieves relevant context for the explanation process.
+
+The general knowledge retrieval function supports top-k retrieval, with a default `top_k` value of 4.
+
+The current implementation uses an in-memory vector representation and cosine similarity. It does not use a persistent vector database.
+
+### 7.4 Large Language Model
+
+The locally hosted LLM is:
+
+`qwen3.5-4b-mlx`
+
+It is accessed through the LM Studio OpenAI-compatible local API.
+
+The retrieved knowledge and original report content are supplied to the LLM to generate a structured, patient-friendly educational explanation.
+
+### 7.5 Explanation Safety and Validation
+
+The RAG service includes structured output validation and safeguards intended to:
+
+- Explain only information supported by the visible report.
+- Preserve masked text such as `XXXX`.
+- Avoid inventing missing report content.
+- Avoid unsupported diagnostic conclusions.
+- Avoid treatment recommendations and prescriptions.
+- Keep the original report as the source document.
+
+The application returns a disclaimer explaining that the output is educational and not a diagnosis, treatment recommendation, or prescription.
+
+### RAG implementation files
+
+| File | Responsibility |
+|---|---|
+| `backend/app/services/rag_service.py` | Embedding, retrieval, LLM communication, output validation |
+| `backend/app/data/medical_knowledge.json` | Medical knowledge corpus |
+| `backend/app/main.py` | Report explanation API endpoint |
+
+## 8. Full-Stack Application
+
+The project includes a React frontend and FastAPI backend.
 
 ### Backend
-- FastAPI backend with health and API endpoints.
-- X-ray image upload and multi-label prediction.
-- Grad-CAM visualization generation.
-- Verified radiology report lookup and extraction.
-- File validation, error handling, and CORS configuration.
+
+- FastAPI application.
+- X-ray image upload and prediction.
+- Grad-CAM generation.
+- Verified report retrieval.
+- RAG-based report explanation.
+- Image validation and error handling.
+- CORS configuration.
 
 ### Frontend
+
 - React dashboard built with Vite.
-- X-ray image upload and prediction display.
-- Grad-CAM visualization display.
+- X-ray upload interface.
+- Prediction and confidence score display.
+- Grad-CAM visualization.
 - Radiology report reader.
+- AI-generated report explanation display.
 - Backend API connection status and medical disclaimer.
 
-### Testing and Validation
-- Backend API tests: 6 passed.
-- Frontend lint: 0 warnings and 0 errors.
-- Frontend production build: successful.
-- Local end-to-end testing of prediction, Grad-CAM, and report retrieval completed.
+## 9. Backend API Endpoints
 
-## Technology Stack
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | API home |
+| GET | `/health` | Backend health check |
+| POST | `/predict` | Multi-label X-ray prediction |
+| POST | `/gradcam` | Grad-CAM visualization |
+| GET | `/report/{image_id}` | Retrieve original report |
+| POST | `/report/{image_id}/explain` | Generate RAG + LLM explanation |
 
-- **Language:** Python
-- **Deep Learning:** PyTorch, Torchvision
-- **Models:** ResNet18, ResNet50
-- **Data Processing:** pandas, NumPy, Pillow
-- **Report Parsing:** Python XML parser
-- **Evaluation:** scikit-learn, Matplotlib
-- **Backend:** FastAPI, Uvicorn
-- **Frontend:** React, Vite, JavaScript, CSS
-- **API Communication:** HTTP, REST endpoints
-- **Version Control:** Git and GitHub
+Interactive API documentation is available at:
 
-## Repository Structure
+`http://127.0.0.1:8000/docs`
+
+## 10. Technology Stack
+
+| Category | Technologies |
+|---|---|
+| Programming Language | Python |
+| Deep Learning | PyTorch, Torchvision |
+| Models | ResNet18, ResNet50 |
+| Data Processing | Pandas, NumPy, Pillow |
+| Evaluation | Scikit-learn, Matplotlib |
+| Explainability | Grad-CAM |
+| Report Parsing | Python XML parser |
+| Backend | FastAPI, Uvicorn |
+| Frontend | React, Vite, JavaScript, CSS |
+| Embeddings | Nomic Embed Text |
+| LLM | Qwen 3.5 4B MLX |
+| Local LLM Runtime | LM Studio |
+| API Communication | HTTP, REST |
+| Containerization | Docker, Docker Compose |
+| Version Control | Git, GitHub |
+
+## 11. Repository Structure
 
 ```text
 chest_xray_report_reader_starter/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
+│   │   ├── data/
+│   │   │   └── medical_knowledge.json
 │   │   ├── schemas/
 │   │   ├── services/
+│   │   │   ├── model_service.py
+│   │   │   ├── report_service.py
+│   │   │   └── rag_service.py
 │   │   └── main.py
 │   └── tests/
 ├── frontend/
@@ -182,58 +331,38 @@ chest_xray_report_reader_starter/
 │   └── README.md
 ├── scripts/
 ├── docs/
-├── data/ (local dataset; excluded from Git)
-├── outputs/ (local models; excluded from Git)
-├── .gitignore
+│   ├── architecture.md
+│   ├── dataset_and_limitations.md
+│   ├── model_evaluation.md
+│   └── screenshots/
+├── data/                 # Local dataset; excluded from Git
+├── outputs/              # Local models; excluded from Git
+├── Dockerfile
+├── compose.yaml
+├── requirements.txt
+├── requirements-dev.txt
 └── README.md
 ```
 
-## Backend API
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| GET | `/` | API home |
-| GET | `/health` | Health check |
-| POST | `/predict` | X-ray prediction |
-| POST | `/gradcam` | Grad-CAM heatmap |
-| GET | `/report/{image_id}` | Verified report retrieval |
-
-### Run Backend
-
-```bash
-python -m uvicorn backend.app.main:app --reload
-```
-
-API documentation: `http://127.0.0.1:8000/docs`
-
-### Run Tests
-
-```bash
-python -m pytest backend/tests/test_api.py -v
-```
-
-### Disclaimer
-
-This is an educational research prototype. Predictions and Grad-CAM visualizations are not medical diagnoses. Retrieved reports are original dataset records, not new clinical interpretations.
-
-## Local Development Setup
+## 12. Local Development Setup
 
 ### Prerequisites
 
 - Python 3.13
 - Node.js 22 and npm
 - Git
+- LM Studio for local RAG and LLM functionality
 
-### Required Local Assets
+### Required local assets
 
-The following files must be available locally for model inference and report retrieval:
+The following files must be available locally:
 
 - `outputs/models/best_resnet50.pth`
 - `data/processed/image_report_dataset.csv`
 
-These model and dataset assets are not included in the Git repository. They must be obtained or generated separately before running the application.
+These assets are excluded from Git and must be generated or obtained separately.
 
-### Install Backend Dependencies
+### Backend installation
 
 From the repository root:
 
@@ -244,119 +373,212 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements-dev.txt
 ```
 
-### Install Frontend Dependencies
+### Frontend installation
 
-Open a separate terminal:
+Open another terminal:
 
 ```bash
 cd frontend
 npm ci
 ```
 
-### Run the Application
+### Configure LM Studio
 
-Start the backend from the repository root:
+1. Install and open LM Studio.
+2. Load `qwen3.5-4b-mlx`.
+3. Load `text-embedding-nomic-embed-text-v1.5`.
+4. Start the local API server.
+5. Confirm that the configured models are available through the local API.
+
+The default local API base URL is:
+
+`http://127.0.0.1:1234/v1`
+
+The RAG service reads the model names and API base URL from environment variables, with defaults defined in `rag_service.py`.
+
+For Docker execution, the backend must be configured to reach the host machine's LM Studio server.
+
+### Run backend
+
+From the repository root:
 
 ```bash
 source .venv/bin/activate
 python -m uvicorn backend.app.main:app --reload
 ```
 
-Start the frontend in another terminal:
+### Run frontend
+
+From the frontend directory:
 
 ```bash
-cd frontend
 npm run dev
 ```
 
-Open the local frontend URL displayed by Vite, usually `http://localhost:5173`.
+Open the local URL displayed by Vite, usually:
 
-Backend API documentation: `http://127.0.0.1:8000/docs`
+`http://localhost:5173`
 
-### Run Tests
+## 13. Docker Execution
 
-From the repository root:
-
-```bash
-python -m pytest backend/tests/ -v
-```
-
-### Frontend Quality Checks
-
-From the `frontend` directory:
-
-```bash
-npm run lint
-npm run build
-```
-
-## Run the Full-Stack Application with Docker
-
-The project supports local containerized execution using Docker Compose.
+The project supports local containerized execution through `compose.yaml`.
 
 ### Prerequisites
 
 - Docker Desktop
 - Docker Compose
+- Required local model and dataset assets
 
-### Required Local Assets
-
-Before building the backend image, make sure these local files exist:
-
-- `outputs/models/best_resnet50.pth`
-- `data/processed/image_report_dataset.csv`
-
-These files are intentionally excluded from Git because they are local model and dataset assets.
-
-### Build and Start
+### Build and start
 
 From the repository root:
 
 ```bash
-docker compose up -d --build
+docker compose -f compose.yaml up -d --build
 ```
 
-### Access the Application
+### Access the application
 
-- Frontend: http://localhost:8080
-- Backend API: http://localhost:8000
-- Backend health: http://localhost:8000/health
-- Interactive API documentation: http://localhost:8000/docs
+| Component | URL |
+|---|---|
+| Frontend | http://localhost:8080 |
+| Backend API | http://localhost:8000 |
+| Health Check | http://localhost:8000/health |
+| API Documentation | http://localhost:8000/docs |
 
-### Check Container Status
+### Check containers
 
 ```bash
-docker compose ps
+docker compose -f compose.yaml ps
 ```
 
-### View Logs
+### View logs
 
 ```bash
-docker compose logs --tail 100
+docker compose -f compose.yaml logs --tail 100
 ```
 
-### Stop the Application
+### Stop containers
 
 ```bash
-docker compose down
+docker compose -f compose.yaml down
 ```
 
-The frontend is served by Nginx and communicates with the FastAPI backend through the configured API URL.
+The frontend is served through Nginx and communicates with the FastAPI backend.
 
-### Local Demo Disclaimer
+**Important:** The report explanation feature also requires the LM Studio server and both configured models to be running and reachable by the backend.
 
-This Docker configuration is intended for local educational demonstration. It is not a production medical service. Do not expose the application or its dataset publicly without reviewing data licensing, privacy, security, and deployment requirements.
+Docker execution is intended for local educational demonstration, not production medical deployment.
 
-## Application Screenshots
+## 14. Testing and Quality Checks
+
+The project has undergone backend, frontend, and local integration testing.
+
+### Backend tests
+
+Latest verified result:
+
+**13 passed**
+
+Run:
+
+```bash
+python -m pytest backend/tests/test_api.py -v
+```
+
+### Frontend lint
+
+Latest verified result: 0 warnings and 0 errors.
+
+```bash
+cd frontend
+npm run lint
+```
+
+### Frontend production build
+
+Latest verified result: successful.
+
+```bash
+npm run build
+```
+
+### Manual application testing
+
+The following workflows were manually tested:
+
+- Dashboard loading.
+- X-ray image upload and prediction.
+- Grad-CAM visualization.
+- Radiology report retrieval.
+- RAG-based report explanation.
+
+The local RAG explanation API was also tested successfully with a sample report.
+
+## 15. Application Screenshots
 
 ### Dashboard
-![Dashboard](docs/screenshots/01-dashboard.png)
 
-### X-Ray Prediction
-![X-Ray Prediction](docs/screenshots/02-prediction.png)
+![Application Dashboard](docs/screenshots/01-dashboard.png)
+
+### X-ray Prediction
+
+![X-ray Prediction](docs/screenshots/02-prediction.png)
 
 ### Grad-CAM Visualization
-![Grad-CAM](docs/screenshots/03-gradcam.png)
+
+![Grad-CAM Visualization](docs/screenshots/03-gradcam.png)
 
 ### Radiology Report Reader
+
 ![Radiology Report Reader](docs/screenshots/04-report-reader.png)
+
+### RAG Report Explanation
+
+![RAG Report Explanation](docs/screenshots/05-rag-report-explanation.png)
+
+Training and evaluation plots are documented in the model evaluation section.
+
+## 16. Limitations and Responsible Use
+
+- The dataset labels are weak labels derived from report metadata.
+- The dataset is limited to a selected subset of the Indiana University Chest X-ray Collection.
+- Classification performance is moderate and varies across labels.
+- The model is not clinically validated.
+- Grad-CAM is an approximate visualization, not proof of disease localization.
+- The RAG knowledge corpus is limited and does not represent comprehensive medical knowledge.
+- Embedding retrieval currently uses in-memory vectors rather than a persistent vector database.
+- LLM explanations may contain errors or omissions despite validation safeguards.
+- Masked or incomplete source-report text cannot be reliably reconstructed.
+- The application is an educational prototype and must not be used for medical decisions.
+
+## 17. Future Improvements
+
+- Expand and improve the quality of the training dataset.
+- Evaluate performance on independent external datasets.
+- Improve class-specific model performance.
+- Add more robust retrieval evaluation.
+- Expand and validate the medical knowledge corpus.
+- Add persistent vector database support if required.
+- Improve automated testing of RAG output quality.
+- Improve deployment security and monitoring.
+
+## 18. Project Documentation
+
+Additional technical documentation:
+
+- [Architecture](docs/architecture.md)
+- [Dataset and Limitations](docs/dataset_and_limitations.md)
+- [Model Evaluation](docs/model_evaluation.md)
+
+## 19. Author and Repository
+
+**GitHub:** [Ishika Pandey](https://github.com/Ishika08549)
+
+**Project Repository:** [Chest X-ray Disease Detection & Radiology Report Reader](https://github.com/Ishika08549/chest-xray-disease-detection-report-reader)
+
+---
+
+**Project Type:** Deep Learning + Computer Vision + RAG + LLM + Full-Stack Web Application
+
+**Purpose:** Educational research and portfolio demonstration only.
